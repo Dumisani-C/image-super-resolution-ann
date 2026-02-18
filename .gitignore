@@ -1,0 +1,17 @@
+# datasets + generated files
+data/
+*.npy
+*.npz
+*.h5
+*.keras
+*.ckpt
+*.pth
+runs/
+logs/
+
+# python junk
+__pycache__/
+*.pyc
+.venv/
+.vscode/
+.DS_Store
