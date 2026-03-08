@@ -114,6 +114,36 @@ image-super-resolution-ann/
 
 ---
 
+## Demo — Upscale Any Image
+
+Once the model is trained, upscale **any single image** with one command:
+
+```bash
+python src/upscale.py --input path/to/your_image.png
+```
+
+This produces two files next to the input:
+- `your_image_sr.png` — the 2× super-resolved output
+- `your_image_compare.png` — a side-by-side: **LR input | Bicubic | ESPCN**
+
+**Example using a DIV2K image:**
+```bash
+python src/upscale.py --input Data/DIV2K_valid_LR_bicubic/X2/0801x2.png
+# Input  : 1020×678
+# Output : 2040×1356
+```
+
+| Argument        | Default                              | Description                       |
+|-----------------|--------------------------------------|-----------------------------------|
+| `--input`       | *(required)*                         | Path to the LR image to upscale   |
+| `--checkpoint`  | outputs/checkpoints/espcn_best.pth   | Trained model weights             |
+| `--output`      | `<stem>_sr.<ext>`                    | Where to save the SR image        |
+| `--comparison`  | `<stem>_compare.<ext>`               | Where to save the side-by-side    |
+| `--scale`       | 2                                    | Upscale factor                    |
+| `--arch`        | espcn                                | `espcn` or `srcnn`                |
+
+---
+
 ## Quick Start
 
 ### 1. Install dependencies
