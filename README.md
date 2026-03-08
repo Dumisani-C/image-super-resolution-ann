@@ -69,6 +69,16 @@ The trained model is compared against bicubic and bilinear baselines using:
 - **PSNR** (Peak Signal-to-Noise Ratio, dB) — higher is better
 - **SSIM** (Structural Similarity Index, 0–1) — higher is better
 
+### Results — DIV2K Validation Set (100 images, 2× upscale)
+
+| Method       | Mean PSNR (dB) ↑ | Mean SSIM ↑ |
+|--------------|-----------------|------------|
+| Bilinear     | 30.40           | 0.8938     |
+| Bicubic      | 31.04           | 0.9015     |
+| **ESPCN (50 epochs)** | **32.39** | **0.9232** |
+
+ESPCN achieves **+1.35 dB PSNR** and **+0.022 SSIM** over the bicubic baseline after 50 epochs of L1 training on 53,692 patch pairs.
+
 ---
 
 ## Project Structure
