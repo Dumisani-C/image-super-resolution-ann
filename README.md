@@ -8,7 +8,7 @@ A PyTorch implementation of CNN-based image super-resolution (2× upscaling) usi
 
 We want to take low-quality (low-resolution) photo images and upscale them **2×** while preserving as much visual detail as possible. The approach is supervised learning: high-resolution (HR) images are collected, downscaled by 2× to create their low-resolution (LR) counterparts, and an ANN is trained to map LR → HR.
 
-**Motivation:** As a game developer, scaling small textures or sprites up manually causes significant quality loss (blurring, artefacts). A learned ANN can upscale images while recovering sharp edges and fine detail that classical interpolation methods destroy.
+**Motivation:** Image scaling is an important challenge in areas such as game development, where small textures or sprites often need to be enlarged. Traditional interpolation methods frequently introduce blurring and artifacts. In this project, we investigate how Artificial Neural Networks (ANNs) can be used to perform image upscaling while preserving sharp edges and fine details.
 
 ---
 
