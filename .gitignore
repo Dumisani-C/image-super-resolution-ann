@@ -1,5 +1,6 @@
 # datasets + generated files
 data/
+outputs/
 *.npy
 *.npz
 *.h5
@@ -8,6 +9,7 @@ data/
 *.pth
 runs/
 logs/
+
 
 # python junk
 __pycache__/
