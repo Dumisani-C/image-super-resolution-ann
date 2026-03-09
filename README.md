@@ -133,14 +133,14 @@ python src/upscale.py --input Data/DIV2K_valid_LR_bicubic/X2/0801x2.png
 # Output : 2040×1356
 ```
 
-| Argument        | Default                              | Description                       |
-|-----------------|--------------------------------------|-----------------------------------|
-| `--input`       | *(required)*                         | Path to the LR image to upscale   |
-| `--checkpoint`  | outputs/checkpoints/espcn_best.pth   | Trained model weights             |
-| `--output`      | `<stem>_sr.<ext>`                    | Where to save the SR image        |
-| `--comparison`  | `<stem>_compare.<ext>`               | Where to save the side-by-side    |
-| `--scale`       | 2                                    | Upscale factor                    |
-| `--arch`        | espcn                                | `espcn` or `srcnn`                |
+| Argument        | Default                                | Description                       |
+|-----------------|----------------------------------------|-----------------------------------|
+| `--input`       | *(required)*                           | Path to the LR image to upscale   |
+| `--checkpoint`  | outputs/checkpoints/espcn_best.keras   | Trained model file                |
+| `--output`      | `<stem>_sr.<ext>`                      | Where to save the SR image        |
+| `--comparison`  | `<stem>_compare.<ext>`                 | Where to save the side-by-side    |
+| `--scale`       | 2                                      | Upscale factor                    |
+| `--arch`        | espcn                                  | `espcn` or `srcnn`                |
 
 ---
 
@@ -195,7 +195,7 @@ python src/train.py
 ### 5. Evaluate
 
 ```bash
-python src/evaluate.py --checkpoint outputs/checkpoints/espcn_best.pth
+python src/evaluate.py --checkpoint outputs/checkpoints/espcn_best.keras
 ```
 
 ---
