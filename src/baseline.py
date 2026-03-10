@@ -1,9 +1,11 @@
 import argparse
+import sys
 from pathlib import Path
 
 import numpy as np
 from PIL import Image
 
+sys.path.insert(0, str(Path(__file__).parent))
 from evaluate import compute_psnr, compute_ssim
 
 
@@ -33,7 +35,7 @@ def bilinear_upsample(lr_image: Image.Image, scale_factor: int) -> Image.Image:
 def evaluate_baseline(
     lr_dir: str,
     hr_dir: str,
-    scale_factor: int = 4,
+    scale_factor: int = 2,
     method: str = 'bicubic',
     output_dir: str = None,
 ) -> tuple:

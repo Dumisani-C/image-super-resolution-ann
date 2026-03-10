@@ -1,6 +1,6 @@
 # Image Super-Resolution with ANNs
 
-A PyTorch implementation of CNN-based image super-resolution (2× upscaling) using the **ESPCN** architecture trained on the DIV2K dataset, with classical bicubic/bilinear baselines for comparison.
+A TensorFlow/Keras implementation of CNN-based image super-resolution (2× upscaling) using the **ESPCN** architecture trained on the DIV2K dataset, with classical bicubic/bilinear baselines for comparison.
 
 ---
 
@@ -8,7 +8,7 @@ A PyTorch implementation of CNN-based image super-resolution (2× upscaling) usi
 
 We want to take low-quality (low-resolution) photo images and upscale them **2×** while preserving as much visual detail as possible. The approach is supervised learning: high-resolution (HR) images are collected, downscaled by 2× to create their low-resolution (LR) counterparts, and an ANN is trained to map LR → HR.
 
-**Motivation:** As a game developer, scaling small textures or sprites up manually causes significant quality loss (blurring, artefacts). A learned ANN can upscale images while recovering sharp edges and fine detail that classical interpolation methods destroy.
+**Motivation:** Image scaling is an important challenge in areas such as game development, where small textures or sprites often need to be enlarged. Traditional interpolation methods frequently introduce blurring and artifacts. In this project, we investigate how Artificial Neural Networks (ANNs) can be used to perform image upscaling while preserving sharp edges and fine details.
 
 ---
 
@@ -59,8 +59,8 @@ Output (64×64×3)  — SR patch, 12,288 values
 
 ### Training
 - **Loss:** L1 (MAE) — produces sharper outputs than MSE
-- **Optimizer:** Adam, learning rate 1e-4, halved every 15 epochs
-- **Epochs:** 50
+- **Optimizer:** Adam, initial learning rate 1e-4, halved on validation plateau (patience 5)
+- **Epochs:** 50 (resumable with `--resume`)
 - **Batch size:** 16
 - **Split:** 90% train / 10% validation
 
@@ -76,8 +76,9 @@ The trained model is compared against bicubic and bilinear baselines using:
 | Bilinear     | 30.40           | 0.8938     |
 | Bicubic      | 31.04           | 0.9015     |
 | **ESPCN (50 epochs)** | **32.39** | **0.9232** |
+| **ESPCN (100 epochs)** | *pending* | *pending* |
 
-ESPCN achieves **+1.35 dB PSNR** and **+0.022 SSIM** over the bicubic baseline after 50 epochs of L1 training on 53,692 patch pairs.
+After the initial 50-epoch run (32.39 dB), training was resumed for a further 50 epochs with the learning rate scheduler continuing from its saved state. The model converged to a validation L1 loss of 0.01880 (vs 0.02066 at epoch 1 of the resumed run).
 
 ---
 
@@ -103,7 +104,7 @@ image-super-resolution-ann/
 │   └── tutorial_experiments.ipynb   # End-to-end walkthrough + comparison story
 │
 ├── outputs/
-│   ├── checkpoints/           # Saved model weights (.pth)
+│   ├── checkpoints/           # Saved model weights (.keras)
 │   ├── predictions/           # SR images from model inference
 │   └── comparison_images/     # Baseline output images
 │
@@ -182,15 +183,15 @@ python src/baseline.py --method bicubic
 python src/train.py
 ```
 
-| Argument           | Default                        | Description                  |
-|--------------------|--------------------------------|------------------------------|
-| `--arch`           | espcn                          | `espcn` or `srcnn`           |
-| `--scale`          | 2                              | Upscale factor               |
-| `--epochs`         | 50                             | Training epochs              |
-| `--batch_size`     | 16                             | Batch size                   |
-| `--lr`             | 1e-4                           | Initial learning rate        |
-| `--lr_step`        | 15                             | Halve LR every N epochs      |
-| `--checkpoint_dir` | outputs/checkpoints            | Where to save `.pth` files   |
+| Argument           | Default                        | Description                          |
+|--------------------|--------------------------------|--------------------------------------|
+| `--arch`           | espcn                          | `espcn` or `srcnn`                   |
+| `--scale`          | 2                              | Upscale factor                       |
+| `--epochs`         | 50                             | Training epochs                      |
+| `--batch_size`     | 16                             | Batch size                           |
+| `--lr`             | 1e-4                           | Initial learning rate                |
+| `--checkpoint_dir` | outputs/checkpoints            | Where to save `.keras` files         |
+| `--resume`         | None                           | Path to `.keras` checkpoint to resume from |
 
 ### 5. Evaluate
 

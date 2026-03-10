@@ -86,7 +86,7 @@ def extract_patches(
     hr_path = Path(hr_dir)
     lr_path = Path(lr_dir) if lr_dir else None
 
-    exts = {'.png', '.jpg', '.jpeg', '.bmp'}
+    exts = {'.png', '.jpg', '.jpeg', '.bmp', '.tif', '.tiff'}
     hr_images = sorted([f for f in hr_path.iterdir() if f.suffix.lower() in exts])
 
     if num_images:

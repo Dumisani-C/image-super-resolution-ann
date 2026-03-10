@@ -85,8 +85,8 @@ def upscale(
         ]
         for lx, ly, text in labels:
             draw.text((lx, ly), text, fill=(220, 220, 220))
-    except Exception:
-        pass
+    except (ImportError, AttributeError, OSError) as e:
+        print(f"Warning: could not draw labels on comparison image: {e}")
 
     if comparison_path is None:
         comparison_path = str(Path(input_path).parent / f"{input_stem}_compare{input_ext}")

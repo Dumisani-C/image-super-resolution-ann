@@ -1,4 +1,5 @@
 import argparse
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -7,6 +8,7 @@ from PIL import Image
 from skimage.metrics import peak_signal_noise_ratio as skimage_psnr
 from skimage.metrics import structural_similarity as skimage_ssim
 
+sys.path.insert(0, str(Path(__file__).parent))
 from model import PixelShuffle
 
 

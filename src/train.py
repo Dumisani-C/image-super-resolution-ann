@@ -1,4 +1,5 @@
 import os
+import sys
 import argparse
 from pathlib import Path
 
@@ -6,6 +7,7 @@ import numpy as np
 import tensorflow as tf
 from PIL import Image
 
+sys.path.insert(0, str(Path(__file__).parent))
 from model import build_model, PixelShuffle
 
 
@@ -109,8 +111,16 @@ def train(args):
 
     train_ds, val_ds = dataset.get_tf_datasets(batch_size=args.batch_size)
 
-    # Build and compile the model — same pattern as the tutorial
-    model = build_model(args.arch, scale_factor=args.scale)
+    # Build or resume the model
+    resume_path = getattr(args, 'resume', None)
+    if resume_path and Path(resume_path).exists():
+        print(f"Resuming from checkpoint: {resume_path}")
+        model = tf.keras.models.load_model(
+            resume_path,
+            custom_objects={'PixelShuffle': PixelShuffle},
+        )
+    else:
+        model = build_model(args.arch, scale_factor=args.scale)
     model.summary()
 
     model.compile(
@@ -137,7 +147,7 @@ def train(args):
         ),
     ]
 
-    print(f"\nTraining {args.arch.upper()} for up to {args.epochs} epochs\n{'─'*60}")
+    print(f"\nTraining {args.arch.upper()} for up to {args.epochs} epochs\n{'-'*60}")
     history = model.fit(
         train_ds,
         epochs=args.epochs,
@@ -163,6 +173,8 @@ if __name__ == '__main__':
     parser.add_argument('--batch_size',     type=int,   default=16)
     parser.add_argument('--lr',             type=float, default=1e-4)
     parser.add_argument('--checkpoint_dir', type=str,   default='outputs/checkpoints')
+    parser.add_argument('--resume',         type=str,   default=None,
+                        help='Path to a .keras checkpoint to resume training from')
     args = parser.parse_args()
 
     train(args)
