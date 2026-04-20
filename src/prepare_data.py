@@ -147,7 +147,7 @@ if __name__ == '__main__':
                         help='Directory to save hr_patches.npy / lr_patches.npy')
     parser.add_argument('--scale',       type=int, default=2,  help='Upscale factor')
     parser.add_argument('--patch_size',  type=int, default=64, help='HR patch side (pixels)')
-    parser.add_argument('--stride',      type=int, default=64, help='Patch extraction stride')
+    parser.add_argument('--stride',      type=int, default=32, help='Patch extraction stride')
     parser.add_argument('--max_patches', type=int, default=None,
                         help='Cap on total patches (None = no limit)')
     parser.add_argument('--num_images',  type=int, default=80,
