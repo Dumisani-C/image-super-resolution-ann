@@ -11,6 +11,9 @@ runs/
 logs/
 
 
+# IDE / tool session data
+.claude/
+
 # python junk
 __pycache__/
 *.pyc

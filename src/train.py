@@ -19,19 +19,20 @@ def augment_pair(lr, hr):
     """
     Apply identical random spatial augmentations to an LR/HR pair.
 
-    Uses stateless ops with a shared seed so both tensors receive exactly
-    the same transform (required when LR and HR have different spatial sizes,
-    as in ESPCN).
+    Uses tf.cond with stateful scalar ops — fixed graph structure so TF
+    does not accumulate new nodes across batches (prevents progressive
+    slowdown from graph growth).
     """
-    seed = tf.random.uniform([2], maxval=tf.int32.max, dtype=tf.int32)
-    lr = tf.image.stateless_random_flip_left_right(lr, seed)
-    hr = tf.image.stateless_random_flip_left_right(hr, seed)
-
-    seed2 = tf.random.uniform([2], maxval=tf.int32.max, dtype=tf.int32)
-    lr = tf.image.stateless_random_flip_up_down(lr, seed2)
-    hr = tf.image.stateless_random_flip_up_down(hr, seed2)
-
+    do_flip_lr = tf.random.uniform(()) > 0.5
+    do_flip_ud = tf.random.uniform(()) > 0.5
     k = tf.random.uniform((), minval=0, maxval=4, dtype=tf.int32)
+
+    lr = tf.cond(do_flip_lr, lambda: tf.image.flip_left_right(lr), lambda: lr)
+    hr = tf.cond(do_flip_lr, lambda: tf.image.flip_left_right(hr), lambda: hr)
+
+    lr = tf.cond(do_flip_ud, lambda: tf.image.flip_up_down(lr), lambda: lr)
+    hr = tf.cond(do_flip_ud, lambda: tf.image.flip_up_down(hr), lambda: hr)
+
     lr = tf.image.rot90(lr, k)
     hr = tf.image.rot90(hr, k)
 
@@ -83,7 +84,10 @@ class SRPerceptualModel(tf.keras.Model):
             pixel_loss = tf.reduce_mean(tf.abs(hr - sr))
             sr_feat = self.vgg(preprocess(sr * 255.0), training=False)
             hr_feat = self.vgg(preprocess(hr * 255.0), training=False)
-            perc_loss = tf.reduce_mean(tf.square(hr_feat - sr_feat))
+            # Normalise by mean feature magnitude so perceptual loss stays
+            # proportional to pixel loss regardless of layer activation scale.
+            scale = tf.stop_gradient(tf.reduce_mean(tf.abs(hr_feat)) + 1e-8)
+            perc_loss = tf.reduce_mean(tf.square(hr_feat - sr_feat)) / scale
             total_loss = pixel_loss + self.perceptual_weight * perc_loss
 
         grads = tape.gradient(total_loss, self.sr_model.trainable_variables)
